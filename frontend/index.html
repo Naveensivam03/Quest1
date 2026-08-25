@@ -1,0 +1,177 @@
+<!DOCTYPE>
+<html>
+
+<head>
+  <title>Quest1 Dialogue finder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main class="app">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        QUEST1
+      </div>
+
+      <div class="header-label">
+        DIALOGUE FINDER
+      </div>
+    </header>
+
+
+    <!-- Input Section -->
+    <section class="hero">
+
+      <div class="eyebrow">
+        VIDEO ANALYSIS
+      </div>
+
+      <h1>
+        FIND THE<br>
+        EXACT FRAME
+      </h1>
+
+      <p class="description">
+        Locate the exact video frame where
+        a dialogue appears.
+      </p>
+
+    </section>
+
+
+    <section class="input-section">
+
+      <!-- Video URL -->
+      <div class="field">
+
+        <label for="video-url">
+          VIDEO URL
+        </label>
+
+        <input id="video-url" type="url" placeholder="https://youtube.com/..." autocomplete="off">
+
+      </div>
+
+
+      <!-- Dialogue -->
+      <div class="field">
+
+        <label for="dialogue">
+          DIALOGUE
+        </label>
+
+        <textarea id="dialogue" rows="3" placeholder="Enter the dialogue to find..."></textarea>
+
+      </div>
+
+
+      <!-- Submit -->
+      <button id="find-button" type="button">
+        FIND EXACT FRAME
+      </button>
+
+    </section>
+
+
+    <!-- Status -->
+    <section id="status" class="status hidden" aria-live="polite">
+      <span class="status-indicator"></span>
+
+      <span id="status-text">
+        Processing...
+      </span>
+    </section>
+
+
+    <!-- Error -->
+    <section id="error" class="error hidden" aria-live="assertive">
+      <span id="error-text"></span>
+    </section>
+
+
+    <!-- Result -->
+    <section id="result" class="result hidden">
+
+      <div class="section-heading">
+        RESULT
+      </div>
+
+
+      <!-- Matched dialogue -->
+      <div class="matched-dialogue">
+        <span class="quote-mark">"</span>
+
+        <span id="result-text">
+        </span>
+
+        <span class="quote-mark">"</span>
+      </div>
+
+
+      <!-- Frame -->
+      <div class="frame-container">
+
+        <img id="frame-image" src="" alt="Extracted video frame">
+
+      </div>
+
+
+      <!-- Metadata -->
+      <div class="metadata">
+
+        <div class="metadata-item">
+          <span class="metadata-label">
+            TIMESTAMP
+          </span>
+
+          <span id="result-timestamp" class="metadata-value">
+          </span>
+        </div>
+
+
+        <div class="metadata-item">
+          <span class="metadata-label">
+            FRAME
+          </span>
+
+          <span id="result-frame" class="metadata-value">
+          </span>
+        </div>
+
+      </div>
+
+
+      <!-- Future video action -->
+      <button id="watch-button" class="secondary-button" type="button" disabled>
+        WATCH AT THIS POINT
+      </button>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+
+      <span>
+        QUEST1
+      </span>
+
+      <span>
+        EXACT FRAME DETECTION
+      </span>
+
+    </footer>
+
+  </main>
+
+
+  <script src="app.js"></script>
+</body>
+
+</html>
