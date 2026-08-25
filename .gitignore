@@ -1,0 +1,42 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.csr
+secrets.*
+
+# Python caches and virtualenvs
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.venv/
+venv/
+
+# Databases and local state
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated media and downloads
+backend/outputs/
+test/*.mp4
+test/*.mkv
+test/*.wav
+test/*.jpg
+test/*.ytdl
+test/*.part
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
