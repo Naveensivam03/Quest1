@@ -590,3 +590,33 @@ button {
   }
 
 }
+
+/* =========================================================
+   VIDEO PLAYER
+   ========================================================= */
+
+.video-container {
+  width: 100%;
+
+  margin-top: 28px;
+
+  border: 1px solid var(--gray-4);
+
+  background: var(--surface);
+
+  overflow: hidden;
+}
+
+
+.video-container video {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  max-height: 650px;
+
+  background: var(--black);
+
+  object-fit: contain;
+}

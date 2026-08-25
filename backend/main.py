@@ -13,7 +13,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5500"],
+    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -62,6 +62,7 @@ def find_dialogue_endpoint(request: DialogueRequest):
     return {
         "success": True,
         "video_id": result["video_id"],
+        "video_url": f"/outputs/{result['video_id']}/video.mp4",
         "text": result["text"],
         "start_time": result["start_time"],
         "end_time": result["end_time"],
