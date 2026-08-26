@@ -30,6 +30,7 @@ app.mount(
 class DialogueRequest(BaseModel):
     video_url: str
     dialogue: str
+    use_ocr: bool = False
 
 
 @app.get("/")
@@ -46,6 +47,7 @@ def find_dialogue_endpoint(request: DialogueRequest):
     result = find_dialogue(
         video_id=video["video_id"],
         target_text=request.dialogue,
+        use_ocr=request.use_ocr
     )
 
     # 3. Dialogue was not found.
@@ -69,4 +71,5 @@ def find_dialogue_endpoint(request: DialogueRequest):
         "frame_number": result["frame_number"],
         "frame_timestamp": result["frame_timestamp"],
         "frame_url": frame_url,
+        "match_source": result["match_source"]
     }

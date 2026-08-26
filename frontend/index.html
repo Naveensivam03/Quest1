@@ -86,7 +86,21 @@
         <textarea id="dialogue" rows="3" placeholder="Enter the dialogue to find..."></textarea>
 
       </div>
+      <div class="ocr-option">
 
+        <label class="switch-label">
+
+          <input id="use-ocr" type="checkbox">
+
+          <span class="switch"></span>
+
+          <span class="switch-text">
+            USE OCR
+          </span>
+
+        </label>
+
+      </div>
 
       <button id="find-button" type="button">
         FIND EXACT FRAME
@@ -143,6 +157,15 @@
         <span id="result-text"></span>
 
         <span class="quote-mark">"</span>
+        <div class="metadata-item">
+
+          <span class="metadata-label">
+            MATCH SOURCE
+          </span>
+
+          <span id="result-source" class="metadata-value"></span>
+
+        </div>
 
       </div>
 

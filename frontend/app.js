@@ -24,6 +24,11 @@ const timelinePointer = document.getElementById("timeline-pointer");
 const timelineStart = document.getElementById("timeline-start");
 const timelineEnd = document.getElementById("timeline-end");
 
+
+const useOcrInput = document.getElementById("use-ocr");
+const resultSource = document.getElementById("result-source");
+
+
 let dialogueStart = 0;
 let dialogueEnd = 0;
 let frameTimestamp = 0;
@@ -112,7 +117,8 @@ async function findExactFrame() {
 
         body: JSON.stringify({
           video_url: videoUrl,
-          dialogue: dialogue
+          dialogue: dialogue,
+          use_ocr: useOcrInput.checked
         })
       }
     );
@@ -237,6 +243,9 @@ function displayResult(data) {
 
   if (!Number.isFinite(frameTimestamp)) {
     frameTimestamp = dialogueStart;
+  }
+  if (resultSource) {
+    resultSource.textContent = data.match_source === "ocr" ? "OCR" : "WHISPER";
   }
 
 
