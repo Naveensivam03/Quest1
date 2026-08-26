@@ -5,6 +5,7 @@ from db.repository import (
     create_transcript_words,
     create_video,
     get_video_by_external_id,
+    get_video_by_url,
     has_transcript,
     update_video,
 )
@@ -17,22 +18,27 @@ def process_video(url: str) -> dict:
 
     with SessionLocal() as session:
 
-        # 1. Get stable video identity from yt-dlp
-        external_id = get_video_id(url)
+        # 1. Check local DB cache by URL first (avoids network call if cached)
+        video = get_video_by_url(session, url)
 
-        # 2. Find existing video by stable ID
-        video = get_video_by_external_id(
-            session,
-            external_id,
-        )
-
-        # 3. Create record if this video is new
+        # 2. If not found by URL, resolve external_id via yt-dlp & check by external_id
         if video is None:
-            video = create_video(
-                session,
-                url,
-                external_id,
-            )
+            external_id = None
+            try:
+                external_id = get_video_id(url)
+                video = get_video_by_external_id(
+                    session,
+                    external_id,
+                )
+            except Exception:
+                pass
+
+            if video is None:
+                video = create_video(
+                    session,
+                    url,
+                    external_id,
+                )
         try:
 
             output_dir = Path("outputs") / str(video.id)

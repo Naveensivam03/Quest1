@@ -1,18 +1,17 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from db.models import DialogueMatch, TranscriptWord, Video
 from db.models import DialogueMatch, OCRResult, TranscriptWord, Video
 
 
-# def get_video_by_url(
-#     session: Session,
-#     url: str,
-# ) -> Video | None:
-#     statement = select(Video).where(Video.url == url)
-#
-#     return session.scalar(statement)
-#
+def get_video_by_url(
+    session: Session,
+    url: str,
+) -> Video | None:
+    statement = select(Video).where(Video.url == url)
+
+    return session.scalar(statement)
+
 
 def get_video_by_external_id(
     session: Session,
@@ -25,19 +24,20 @@ def get_video_by_external_id(
     return session.scalar(statement)
 
 
-# def create_video(
-#     session: Session,
-#     url: str,
-# ) -> Video:
-#     video = Video(
-#         url=url,
-#         status="pending",
-#     )
 def create_video(
     session: Session,
     url: str,
-    external_id: str,
+    external_id: str | None = None,
 ) -> Video:
+    existing = get_video_by_url(session, url)
+    if existing:
+        return existing
+
+    if external_id:
+        existing_ext = get_video_by_external_id(session, external_id)
+        if existing_ext:
+            return existing_ext
+
     video = Video(
         url=url,
         external_id=external_id,
