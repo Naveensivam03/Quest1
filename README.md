@@ -64,41 +64,58 @@ quest/
 │   ├── index.html               # Main user interface
 │   ├── app.js                   # Client-side API integration & video player logic
 │   └── style.css                # Interface styling
-├── setup.sh                     # Automated environment and database setup script
-└── run.sh                       # One-command runner for backend and frontend
+├── setup.sh                     # Automated setup script (Linux / WSL)
+├── run.sh                       # Application runner (Linux / WSL)
+├── setup_mac.sh                 # Automated setup script (macOS)
+└── run_mac.sh                   # Application runner (macOS)
 ```
 
 ## Setup
 
+> [!IMPORTANT]
+> **OS Support**: Official setup and run scripts are provided for **Linux** (`setup.sh`, `run.sh`) and **macOS** (`setup_mac.sh`, `run_mac.sh`). **Native Windows is not supported at this time** (Windows users must use WSL - Windows Subsystem for Linux).
+
 ### Prerequisites
 
-* **Python 3.14** (Backend) & **Python 3.13** (OCR runtime)
+* **Python 3.14** (Backend) & **Python 3.13** (OCR runtime - managed automatically via `uv` if not installed)
 * **PostgreSQL**
 * **FFmpeg**
 * **uv** package manager
 
 ### Quick Start
 
+#### Linux & Windows (WSL)
 1. Clone the repository:
    ```bash
    git clone <repo-url>
    cd quest
    ```
 
-2. Run the automated setup script:
+2. Run setup:
    ```bash
    ./setup.sh
    ```
-   The setup script will:
-   - Check system prerequisites (`uv`, `ffmpeg`, `psql`, Python 3.14, Python 3.13).
-   - Configure PostgreSQL credentials and create the `quest1` database if needed.
-   - Install backend dependencies using `uv sync`.
-   - Configure the isolated `.venv-ocr` environment for PaddleOCR.
-   - Run Alembic database migrations.
 
-3. Start the application:
+3. Start application:
    ```bash
    ./run.sh
+   ```
+
+#### macOS
+1. Clone the repository:
+   ```bash
+   git clone <repo-url>
+   cd quest
+   ```
+
+2. Run macOS setup:
+   ```bash
+   ./setup_mac.sh
+   ```
+
+3. Start application on macOS:
+   ```bash
+   ./run_mac.sh
    ```
 
 The application will be accessible at:
