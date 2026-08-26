@@ -4,12 +4,12 @@ from db.database import SessionLocal
 from db.repository import (
     create_transcript_words,
     create_video,
-    get_video_by_url,
+    get_video_by_external_id,
     has_transcript,
     update_video,
 )
 from services.audio import extract_audio
-from services.downloader import download_video
+from services.downloader import download_video, get_video_id
 from services.transcription import transcribe_audio
 
 
@@ -17,13 +17,22 @@ def process_video(url: str) -> dict:
 
     with SessionLocal() as session:
 
-        # 1. Find existing video
-        video = get_video_by_url(session, url)
+        # 1. Get stable video identity from yt-dlp
+        external_id = get_video_id(url)
 
-        # 2. Create record if this URL is new
+        # 2. Find existing video by stable ID
+        video = get_video_by_external_id(
+            session,
+            external_id,
+        )
+
+        # 3. Create record if this video is new
         if video is None:
-            video = create_video(session, url)
-
+            video = create_video(
+                session,
+                url,
+                external_id,
+            )
         try:
 
             output_dir = Path("outputs") / str(video.id)

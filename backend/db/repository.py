@@ -2,26 +2,47 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from db.models import DialogueMatch, TranscriptWord, Video
+from db.models import DialogueMatch, OCRResult, TranscriptWord, Video
 
 
-def get_video_by_url(
+# def get_video_by_url(
+#     session: Session,
+#     url: str,
+# ) -> Video | None:
+#     statement = select(Video).where(Video.url == url)
+#
+#     return session.scalar(statement)
+#
+
+def get_video_by_external_id(
     session: Session,
-    url: str,
+    external_id: str,
 ) -> Video | None:
-    statement = select(Video).where(Video.url == url)
+    statement = select(Video).where(
+        Video.external_id == external_id
+    )
 
     return session.scalar(statement)
 
 
+# def create_video(
+#     session: Session,
+#     url: str,
+# ) -> Video:
+#     video = Video(
+#         url=url,
+#         status="pending",
+#     )
 def create_video(
     session: Session,
     url: str,
+    external_id: str,
 ) -> Video:
     video = Video(
         url=url,
+        external_id=external_id,
         status="pending",
     )
-
     session.add(video)
     session.commit()
     session.refresh(video)
@@ -123,3 +144,93 @@ def create_dialogue_match(
     session.refresh(match)
 
     return match
+
+
+def create_ocr_results(
+    session: Session,
+    video_id,
+    results: list[dict],
+) -> None:
+
+    ocr_results = [
+        OCRResult(
+            video_id=video_id,
+            frame_number=item["frame_number"],
+            timestamp=item["timestamp"],
+            text=item["text"],
+        )
+        for item in results
+    ]
+
+    session.add_all(ocr_results)
+    session.commit()
+
+
+def has_ocr_results(
+    session: Session,
+    video_id,
+) -> bool:
+
+    statement = (
+        select(OCRResult.id)
+        .where(OCRResult.video_id == video_id)
+        .limit(1)
+    )
+
+    return session.scalar(statement) is not None
+
+
+def get_ocr_results(
+    session: Session,
+    video_id,
+) -> list[dict]:
+
+    statement = (
+        select(OCRResult)
+        .where(OCRResult.video_id == video_id)
+        .order_by(OCRResult.timestamp)
+    )
+
+    results = session.scalars(statement).all()
+
+    return [
+        {
+            "frame_number": result.frame_number,
+            "timestamp": result.timestamp,
+            "text": result.text,
+        }
+        for result in results
+    ]
+
+
+def get_ocr_results_in_range(
+    session: Session,
+    video_id,
+    start_time: float,
+    end_time: float | None = None,
+) -> list[dict]:
+    statement = (
+        select(OCRResult)
+        .where(
+            OCRResult.video_id == video_id,
+            OCRResult.timestamp >= start_time,
+        )
+    )
+
+    if end_time is not None:
+        statement = statement.where(
+            OCRResult.timestamp <= end_time,
+        )
+
+    statement = statement.order_by(OCRResult.timestamp)
+
+    results = session.scalars(statement).all()
+
+    return [
+        {
+            "frame_number": result.frame_number,
+            "timestamp": result.timestamp,
+            "text": result.text,
+        }
+        for result in results
+    ]

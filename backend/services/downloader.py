@@ -195,6 +195,22 @@ def _build_ydl_options(
     return options
 
 
+def get_video_id(url: str) -> str:
+    options = {
+        "quiet": True,
+        "no_warnings": True,
+        "noplaylist": True,
+    }
+
+    with yt_dlp.YoutubeDL(options) as ydl:
+        info = ydl.extract_info(
+            url,
+            download=False,
+        )
+
+    return info["id"]
+
+
 def download_video(
     url: str,
     output_dir: str,

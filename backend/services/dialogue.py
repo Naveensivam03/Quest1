@@ -102,6 +102,8 @@ def find_dialogue(
                 ),
                 end_time=timeline["end_time"] + margin,
                 sample_fps=2.0,
+                session=session,
+                video_id=video.id,
             )
 
             ocr_match = find_text(
@@ -154,6 +156,8 @@ def find_dialogue(
         ocr_results = scan_video(
             video_path=video.file_path,
             sample_fps=1.0,
+            session=session,
+            video_id=video.id,
         )
 
         ocr_match = find_text(

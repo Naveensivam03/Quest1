@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, Float, Integer, String, ForeignKey
+from sqlalchemy import DateTime, Float, Integer, String, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.database import Base
@@ -19,6 +19,11 @@ class Video(Base):
         String,
         unique=True,
         nullable=False,
+    )
+    external_id: Mapped[str | None] = mapped_column(
+        String,
+        unique=True,
+        nullable=True,
     )
 
     status: Mapped[str] = mapped_column(
@@ -71,6 +76,10 @@ class Video(Base):
         cascade="all, delete-orphan",
     )
     dialogue_matches: Mapped[list["DialogueMatch"]] = relationship(
+        back_populates="video",
+        cascade="all, delete-orphan",
+    )
+    ocr_results: Mapped[list["OCRResult"]] = relationship(
         back_populates="video",
         cascade="all, delete-orphan",
     )
@@ -164,4 +173,51 @@ class DialogueMatch(Base):
 
     video: Mapped["Video"] = relationship(
         back_populates="dialogue_matches",
+    )
+
+
+class OCRResult(Base):
+    __tablename__ = "ocr_results"
+
+    id: Mapped[int] = mapped_column(
+        primary_key=True,
+        autoincrement=True,
+    )
+
+    video_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("videos.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+
+    frame_number: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+    )
+
+    timestamp: Mapped[float] = mapped_column(
+        Float,
+        nullable=False,
+    )
+
+    text: Mapped[str] = mapped_column(
+        String,
+        nullable=False,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+    )
+
+    video: Mapped["Video"] = relationship(
+        back_populates="ocr_results",
+    )
+
+    __table_args__ = (
+        UniqueConstraint(
+            "video_id",
+            "frame_number",
+            name="uq_ocr_results_video_frame",
+        ),
     )
