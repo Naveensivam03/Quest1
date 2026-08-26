@@ -19,24 +19,56 @@ __pycache__/
 .ruff_cache/
 .coverage
 .venv/
+.venv*/
 venv/
 
 # Databases and local state
 *.db
 *.sqlite
 *.sqlite3
+*.sql
+*.dump
 
-# Generated media and downloads
+# Generated media, frame artifacts, and downloads
 backend/outputs/
-test/*.mp4
-test/*.mkv
-test/*.wav
-test/*.jpg
-test/*.ytdl
-test/*.part
+outputs/
+*.mp4
+*.mkv
+*.webm
+*.avi
+*.mov
+*.flv
+*.ytdl
+*.part
+*.wav
+*.mp3
+*.flac
+*.aac
+*.m4a
+*.jpg
+*.jpeg
+*.png
+
+# OCR caches
+.paddleocr/
+.easyocr/
+.cache/
+*.cache
+ocr_cache/
+
+# Large model files
+*.pt
+*.pth
+*.onnx
+*.bin
+*.safetensors
+*.gguf
+*.engine
+models/
 
 # OS/editor files
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+
