@@ -2,6 +2,9 @@
 
 Find the exact video frame where a given dialogue appears.
 
+
+![Dialogue Finder Demo](output.gif)
+
 ## Overview
 
 Dialogue Finder takes a public video URL and a target dialogue, processes the video automatically, and identifies the exact timestamp and frame where the dialogue occurs.
