@@ -1,6 +1,6 @@
 # Approach & System Design
 
-This document details how we reasoned through the problem of locating the exact video frame where a given dialogue appears, why we built the system the way we did, and the trade-offs made along the way.
+This document details how I reasoned through the problem of locating the exact video frame where a given dialogue appears, why I built the system the way I did, and the trade-offs made along the way.
 
 ---
 
@@ -32,9 +32,9 @@ The prompt doesn't specify if dialogue is:
 
 ## 3. Initial Investigation
 
-We inspected the provided sample video and confirmed that the target dialogue (*"My mind rebels at stagnation"*) is **spoken by Sherlock Holmes**, with no prominent visual title card.
+I inspected the provided sample video and confirmed that the target dialogue (*"My mind rebels at stagnation"*) is **spoken by Sherlock Holmes**, with no prominent visual title card.
 
-This established our core strategy:
+This established my core strategy:
 1. **Speech-first**: Use fast, word-level speech-to-text as the primary discovery mechanism.
 2. **Targeted OCR as fallback & verification**: Use visual text recognition only when speech fails (e.g., silent videos, muted audio) or to pin down visual subtitle frames.
 
@@ -121,7 +121,7 @@ This reduces continuous temporal search to an $O(N)$ sliding window over words.
 
 Speech recognition is rarely 100% identical to written text. Punctuation, capitalization, contractions, and Whisper-specific word hyphenations can break strict string matching.
 
-To solve this without opening the door to false positives, we built a **3-stage matching pipeline**:
+To solve this without opening the door to false positives, I built a **3-stage matching pipeline**:
 
 ```mermaid
 flowchart LR
@@ -150,13 +150,13 @@ flowchart LR
 
 ## 8. Intelligent OCR: Targeted Verification & Isolated Runtime
 
-Full-video OCR is a heavyweight operation. We treat OCR as a targeted tool rather than a brute-force default:
+Full-video OCR is a heavyweight operation. I treat OCR as a targeted tool rather than a brute-force default:
 
 ### Targeted Window Scan (When Speech Found Dialogue)
-When speech transcription finds a match, we don't scan the whole video. We scan a localized window:
+When speech transcription finds a match, the system doesn't scan the whole video. It scans a localized window:
 $$\left[\max(0, T_{\text{start}} - 1.5\text{s}),\ T_{\text{end}} + 1.5\text{s}\right] \quad \text{at } 2\text{ FPS}$$
-- If on-screen text (subtitles/captions) matches the query, we refine the frame timestamp to the visual appearance.
-- If no visual text is found, we fall back to the high-confidence speech timestamp.
+- If on-screen text (subtitles/captions) matches the query, the frame timestamp is refined to the visual appearance.
+- If no visual text is found, the system falls back to the high-confidence speech timestamp.
 
 ### Global Fallback Scan (When Speech Found Nothing)
 If the audio has no speech (silent film, music, muted track), but the user enabled OCR, the system runs a whole-video scan at 1 FPS.
@@ -164,13 +164,13 @@ If the audio has no speech (silent film, music, muted track), but the user enabl
 ### Two-Environment Runtime Architecture
 PaddlePaddle and PaddleOCR currently require Python $\le 3.13$, while modern backends (FastAPI, psycopg3, SQLAlchemy 2.0) run comfortably on Python 3.14.
 
-Rather than bloating deployment with complex multi-container orchestration, we isolate OCR into a lightweight Python 3.13 virtual environment (`.venv-ocr`). The main Python 3.14 backend communicates with `services/ocr_worker.py` via subprocess standard I/O with JSON IPC.
+Rather than bloating deployment with complex multi-container orchestration, I isolated OCR into a lightweight Python 3.13 virtual environment (`.venv-ocr`). The main Python 3.14 backend communicates with `services/ocr_worker.py` via subprocess standard I/O with JSON IPC.
 
 ---
 
 ## 9. Efficient Frame Seeking
 
-Extracting every frame of a video to disk wastes storage and I/O. We use a two-tier approach:
+Extracting every frame of a video to disk wastes storage and I/O. I use a two-tier approach:
 1. **Temporal Localization**: Speech matching or coarse OCR identifies the fractional-second timestamp ($T$).
 2. **Direct Frame Extraction**: OpenCV opens the video, seeks directly via `cv2.CAP_PROP_POS_MSEC`, decodes that single frame, and writes `outputs/{video_id}/frames/frame_{frame_number}.jpg`.
 
@@ -180,7 +180,7 @@ This minimizes unnecessary frame decoding and disk I/O.
 
 ## 10. Database Caching & Stable Video Identity
 
-Video processing shouldn't happen twice for the same media. We use PostgreSQL not just as an audit log, but as an **operational cache**:
+Video processing shouldn't happen twice for the same media. I use PostgreSQL not just as an audit log, but as an **operational cache**:
 
 ```mermaid
 flowchart LR
@@ -203,7 +203,7 @@ flowchart LR
 
 The problem statement asks that the evaluation work without requiring manual scrubbing.
 
-Our frontend interface delivers instant verification:
+The frontend interface delivers instant verification:
 1. Displays the exact **frame number**, **frame timestamp**, and **extracted frame image**.
 2. Mounts an interactive HTML5 video player pre-positioned and seeked directly to `start_time`.
 3. Displays the match source (`whisper` or `ocr`) for full transparency.
@@ -212,7 +212,7 @@ Our frontend interface delivers instant verification:
 
 ## 12. Trade-offs & Engineering Decisions
 
-| Choice | Why We Did It | Alternative Rejected |
+| Choice | Why I Did It | Alternative Rejected |
 |---|---|---|
 | **Speech-first pipeline** | Speech transcription is substantially cheaper than scanning every frame with OCR. | Brute-force full-video OCR. |
 | **3-stage matching** | Handles speech recognition variability without risking false positives. | Pure exact string matching (too brittle) or loose regex. |
