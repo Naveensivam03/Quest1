@@ -11,7 +11,7 @@ It returns:
 - Start and end timestamps
 - Exact frame number and frame timestamp
 - Extracted frame image
-- Direct video playback at the detected timestamp
+- Video playback positioned at the detected timestamp
 
 The system uses speech transcription (Whisper) to locate dialogue in the audio track and optionally uses visual OCR (PaddleOCR) to detect on-screen text and burned-in subtitles.
 
@@ -121,4 +121,4 @@ The application will be accessible at:
 ## Documentation
 
 Detailed architectural and design decisions can be found in:
-- [`docs/DESIGN.md`](docs/DESIGN.md)
+- [`docs/APPROACH.md`](docs/APPROACH.md)
